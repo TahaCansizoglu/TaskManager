@@ -1,6 +1,6 @@
 # task_management
 
-A new Flutter project.
+Provider ve SQLite ile geliştirilmiş bir Task Manager uygulamasıdır.
 
 ## Getting Started
 
