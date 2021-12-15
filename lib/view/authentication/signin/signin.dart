@@ -73,7 +73,8 @@ class _SignInScreenState extends State<SignInScreen> {
                   _buildTextField(
                       hintText: 'Enter your email',
                       obscureText: false,
-                      prefixedIcon: const Icon(Icons.mail, color: Colors.white),
+                      prefixedIcon:
+                          const Icon(Icons.mail, color: Color(0xFF366EE6)),
                       cont: emailController),
                   const SizedBox(
                     height: 30,
@@ -96,13 +97,20 @@ class _SignInScreenState extends State<SignInScreen> {
                   _buildTextField(
                       hintText: 'Enter your password',
                       obscureText: true,
-                      prefixedIcon: const Icon(Icons.lock, color: Colors.white),
+                      prefixedIcon:
+                          const Icon(Icons.lock, color: Color(0xFF366EE6)),
                       cont: passwordController),
                   const SizedBox(
-                    height: 15,
+                    height: 7,
                   ),
+                  TextButton(
+                      onPressed: () {},
+                      child: Text(
+                        "Forget Password ?",
+                        style: TextStyle(color: Colors.white),
+                      )),
                   const SizedBox(
-                    height: 15,
+                    height: 7,
                   ),
                   _buildLoginButton(),
                   const SizedBox(
@@ -139,10 +147,10 @@ class _SignInScreenState extends State<SignInScreen> {
       elevation: 2,
       child: TextField(
         controller: cont,
-        cursorColor: Colors.white,
+        cursorColor: Color(0xFF366EE6),
         cursorWidth: 2,
         obscureText: obscureText,
-        style: const TextStyle(color: Colors.white),
+        style: const TextStyle(color: Color(0xFF366EE6)),
         decoration: InputDecoration(
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
@@ -152,11 +160,11 @@ class _SignInScreenState extends State<SignInScreen> {
             ),
           ),
           filled: true,
-          fillColor: Color(0xFF5180ff),
+          fillColor: Color(0xFFFFFFFF),
           prefixIcon: prefixedIcon,
           hintText: hintText,
           hintStyle: const TextStyle(
-            color: Colors.white54,
+            color: Color(0xFF366EE6),
             fontWeight: FontWeight.bold,
             fontFamily: 'PTSans',
           ),
@@ -189,7 +197,7 @@ class _SignInScreenState extends State<SignInScreen> {
             fontFamily: 'PT-Sans',
             fontSize: 16,
             fontWeight: FontWeight.bold,
-            color: Colors.black,
+            color: Color(0xFF366EE6),
           ),
         ),
         onPressed: () async {
