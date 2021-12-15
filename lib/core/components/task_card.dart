@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 import '../constants/theme.dart';
 import '../init/screen_size.dart';
 import '../models/taskmodel.dart';
@@ -8,14 +7,15 @@ import '../models/taskmodel.dart';
 class TaskCard extends StatelessWidget {
   final Task task;
   final double? noteTextSize;
-  const TaskCard({Key? key, required this.task, this.noteTextSize}) : super(key: key);
+  const TaskCard({Key? key, required this.task, this.noteTextSize})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: getProportionateScreenWidth(5)),
       width: ScreenSize.screenWidth,
-      margin: EdgeInsets.only(bottom: getProportionateScreenHeight(12)),
+      margin: EdgeInsets.only(bottom: getProportionateScreenHeight(8)),
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
@@ -44,14 +44,18 @@ class TaskCard extends StatelessWidget {
                       size: 15,
                     ),
                     const SizedBox(width: 4),
-                    Text("${task.startTime} - ${task.endTime}", style: cardTextStyle),
+                    Text("${task.startTime} - ${task.endTime}",
+                        style: cardTextStyle),
                   ],
                 ),
                 const SizedBox(height: 6),
                 Text(
                   task.note,
                   style: GoogleFonts.lato(
-                    textStyle: TextStyle(fontSize: noteTextSize ?? 12, color: Colors.black, height: 1.2),
+                    textStyle: TextStyle(
+                        fontSize: noteTextSize ?? 12,
+                        color: Colors.black,
+                        height: 1.2),
                   ),
                 ),
               ],
@@ -65,7 +69,11 @@ class TaskCard extends StatelessWidget {
           ),
           RotatedBox(
             quarterTurns: 3,
-            child: Text(task.isCompleted == 1 ? "COMPLETED" : "TODO", style: card3TextStyle),
+            child: Text(
+                task.isCompleted == 1
+                    ? "COMPLETED"
+                    : "${task.taskType.toString().toUpperCase()}",
+                style: card3TextStyle),
           ),
         ]),
       ),

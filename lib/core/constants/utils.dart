@@ -22,9 +22,15 @@ final tab = ColorfulTabBar(
         "Monthly",
       ),
     ),
+    TabItem(
+      color: Colors.greenAccent,
+      title: const Text(
+        "All",
+      ),
+    ),
   ],
   indicatorHeight: 6,
-  verticalTabPadding: 6.0,
+  verticalTabPadding: 2.0,
   labelStyle: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
   selectedHeight: 48,
   unselectedHeight: 40,
