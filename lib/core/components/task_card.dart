@@ -72,7 +72,7 @@ class TaskCard extends StatelessWidget {
             child: Text(
                 task.isCompleted == 1
                     ? "COMPLETED"
-                    : "${task.taskType.toString().toUpperCase()}",
+                    : task.taskType.toString().toUpperCase(),
                 style: card3TextStyle),
           ),
         ]),

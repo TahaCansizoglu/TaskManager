@@ -1,34 +1,45 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorful_tab/flutter_colorful_tab.dart';
-import 'package:task_management/core/constants/theme.dart';
 
+import 'theme.dart';
+
+User? user = FirebaseAuth.instance.currentUser;
+FirebaseFirestore firestore = FirebaseFirestore.instance;
+String name = "";
 final tab = ColorfulTabBar(
   tabs: [
     TabItem(
-      color: lightblue,
+      color: Colors.lightBlue,
+      unselectedColor: Colors.blue[50],
       title: const Text(
         "Daily",
       ),
     ),
     TabItem(
-      color: lightred,
+      unselectedColor: Colors.blue[50],
+      color: lightblue,
       title: const Text(
         "Weekly",
       ),
     ),
     TabItem(
-      color: lightorange,
+      unselectedColor: Colors.blue[50],
+      color: lightblue,
       title: const Text(
         "Monthly",
       ),
     ),
     TabItem(
-      color: Colors.greenAccent,
+      unselectedColor: Colors.blue[50],
+      color: lightblue,
       title: const Text(
         "All",
       ),
     ),
   ],
+  unselectedLabelColor: Colors.blue,
   indicatorHeight: 6,
   verticalTabPadding: 2.0,
   labelStyle: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
@@ -36,7 +47,7 @@ final tab = ColorfulTabBar(
   unselectedHeight: 40,
 );
 ThemeData myTheme = ThemeData(
-  backgroundColor: Colors.blueGrey[100],
+  backgroundColor: Colors.white,
   primaryColor: const Color.fromRGBO(65, 87, 223, 1),
   textTheme: TextTheme(
     headline1: TextStyle(

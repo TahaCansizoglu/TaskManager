@@ -2,8 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:task_management/view/authentication/signup/signup.dart';
-import 'package:task_management/view/home/home_screen.dart';
+import 'package:task_management/view/authentication/resetpassword/reset_password.dart';
+import '../signup/signup.dart';
+import '../../home/home_screen.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({Key? key}) : super(key: key);
@@ -104,8 +105,14 @@ class _SignInScreenState extends State<SignInScreen> {
                     height: 7,
                   ),
                   TextButton(
-                      onPressed: () {},
-                      child: Text(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ResetPasswordScreen(),
+                            ));
+                      },
+                      child: const Text(
                         "Forget Password ?",
                         style: TextStyle(color: Colors.white),
                       )),
@@ -147,20 +154,20 @@ class _SignInScreenState extends State<SignInScreen> {
       elevation: 2,
       child: TextField(
         controller: cont,
-        cursorColor: Color(0xFF366EE6),
+        cursorColor: const Color(0xFF366EE6),
         cursorWidth: 2,
         obscureText: obscureText,
         style: const TextStyle(color: Color(0xFF366EE6)),
         decoration: InputDecoration(
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide(
+            borderSide: const BorderSide(
               width: 0,
               style: BorderStyle.none,
             ),
           ),
           filled: true,
-          fillColor: Color(0xFFFFFFFF),
+          fillColor: const Color(0xFFFFFFFF),
           prefixIcon: prefixedIcon,
           hintText: hintText,
           hintStyle: const TextStyle(
@@ -241,7 +248,7 @@ class _SignInScreenState extends State<SignInScreen> {
           onTap: () => Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => SignUpScreen(),
+                builder: (context) => const SignUpScreen(),
               )),
         ),
       ],
