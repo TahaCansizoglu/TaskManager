@@ -37,8 +37,8 @@ class DBHelper {
     return await _db!.insert(_tableName, task.toJson());
   }
 
-  static void deleteDb() {
-    deleteDatabase(_path);
+  static Future<void> deleteDb() async {
+    await deleteDatabase(_path);
   }
 
   static Future<int> delete(Task task) async =>

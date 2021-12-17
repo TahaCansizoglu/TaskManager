@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:task_management/core/database/db.dart';
+import '../../core/database/db.dart';
 import '../../core/components/task_card2.dart';
 import '../authentication/signin/signin.dart';
 
@@ -26,6 +26,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   String name = "";
+  List<Task> dbTasks = [];
 
   @override
   Widget build(BuildContext context) {
@@ -96,7 +97,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   _buildTasksList(String taskType) {
-    List<Task> dbTasks = [];
     return Consumer<TaskManager>(
       builder: (context, value, child) {
         widget.tasks = value.tasks;
@@ -157,7 +157,11 @@ class _HomeScreenState extends State<HomeScreen> {
       if (widget.tasks.every((item) => item.id != firebaseTasks[i].id)) {
         widget.tasks.add(firebaseTasks[i]);
       }
+      widget.tasks.forEach((element) {
+        DBHelper.insert(element);
+      });
     }
+
     await firestore
         .collection('Users')
         .doc(user!.uid)

@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:task_management/view/authentication/resetpassword/reset_password.dart';
+import '../resetpassword/reset_password.dart';
 import '../signup/signup.dart';
 import '../../home/home_screen.dart';
 

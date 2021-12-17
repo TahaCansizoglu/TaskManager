@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:task_management/core/constants/utils.dart';
+import '../constants/utils.dart';
 
 import '../database/db.dart';
 import '../models/taskmodel.dart';

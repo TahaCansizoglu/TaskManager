@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:task_management/core/constants/utils.dart';
+import '../../core/constants/utils.dart';
 import 'dart:math';
 import '../../core/components/button.dart';
 import '../../core/components/input_field.dart';

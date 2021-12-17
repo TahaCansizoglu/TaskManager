@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:task_management/core/constants/utils.dart';
-import 'package:task_management/core/init/task_manager.dart';
+import '../constants/utils.dart';
+import '../init/task_manager.dart';
 import '../constants/theme.dart';
 import '../init/screen_size.dart';
 import '../models/taskmodel.dart';
