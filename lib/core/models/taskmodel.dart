@@ -48,7 +48,7 @@ class Task {
 
   factory Task.fromJson(Map<String, dynamic> json) {
     return Task(
-      id: json['id'] as int,
+      id: json['id'],
       date: json['date'].toString(),
       endTime: json['endTime'].toString(),
       note: json['note'].toString(),

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorful_tab/flutter_colorful_tab.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'theme.dart';
 
@@ -42,12 +43,12 @@ final tab = ColorfulTabBar(
   unselectedLabelColor: Colors.blue,
   indicatorHeight: 6,
   verticalTabPadding: 2.0,
-  labelStyle: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+  labelStyle: GoogleFonts.lato(fontSize: 22, fontWeight: FontWeight.bold),
   selectedHeight: 48,
   unselectedHeight: 40,
 );
 ThemeData myTheme = ThemeData(
-  backgroundColor: Colors.white,
+  backgroundColor: Color(0xFFD5E8F5),
   primaryColor: const Color.fromRGBO(65, 87, 223, 1),
   textTheme: TextTheme(
     headline1: TextStyle(

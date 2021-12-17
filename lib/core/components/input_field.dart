@@ -9,7 +9,13 @@ class InputField extends StatelessWidget {
   final String hint;
   final Widget? widget;
 
-  const InputField({Key? key, required this.title, this.controller, required this.hint, this.widget}) : super(key: key);
+  const InputField(
+      {Key? key,
+      required this.title,
+      this.controller,
+      required this.hint,
+      this.widget})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +37,7 @@ class InputField extends StatelessWidget {
               decoration: BoxDecoration(
                   border: Border.all(
                     width: 1.0,
-                    color: Colors.grey,
+                    color: Theme.of(context).backgroundColor,
                   ),
                   borderRadius: BorderRadius.circular(12.0)),
               child: Row(
@@ -47,18 +53,6 @@ class InputField extends StatelessWidget {
                       decoration: InputDecoration(
                         hintText: hint,
                         hintStyle: subTitleTextStle,
-                        focusedBorder: const UnderlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.grey,
-                            width: 0,
-                          ),
-                        ),
-                        enabledBorder: const UnderlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.grey,
-                            width: 0,
-                          ),
-                        ),
                       ),
                     ),
                   ),

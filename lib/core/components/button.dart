@@ -20,7 +20,7 @@ class MyButton extends StatelessWidget {
         height: 50,
         width: 130,
         decoration: BoxDecoration(
-          color: addTaskButtonClr,
+          color: Colors.blue,
           borderRadius: BorderRadius.circular(14),
         ),
         child: Center(

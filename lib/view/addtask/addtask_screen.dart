@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:task_management/core/constants/utils.dart';
 import 'dart:math';
 import '../../core/components/button.dart';
 import '../../core/components/input_field.dart';
@@ -30,6 +31,13 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(60),
+        child: AppBar(
+          centerTitle: true,
+          title: Text("Add Task"),
+        ),
+      ),
       body: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
         child: SingleChildScrollView(
@@ -44,7 +52,10 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                 hint: "Enter title here.",
                 controller: _titleController,
               ),
-              InputField(title: "Note", hint: "Enter note here.", controller: _noteController),
+              InputField(
+                  title: "Note",
+                  hint: "Enter note here.",
+                  controller: _noteController),
               InputField(
                 title: "Date",
                 hint: DateFormat.yMd().format(_selectedDate),
@@ -100,7 +111,8 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
               ),
               DropdownButtonFormField(
                   value: _dropDownText,
-                  items: <String>['Daily', 'Weekly', 'Monthly'].map<DropdownMenuItem<String>>((String value) {
+                  items: <String>['Daily', 'Weekly', 'Monthly']
+                      .map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
                       child: Text(value),
@@ -168,6 +180,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
         isCompleted: 0,
         backgroundColor: _randomColor(),
         taskType: _dropDownText);
+
     Provider.of<TaskManager>(context, listen: false).addTask(data);
   }
 
@@ -208,7 +221,11 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
 
   _getDateFromUser() async {
     final DateTime? _pickedDate = await showDatePicker(
-        context: context, initialDate: _selectedDate, initialDatePickerMode: DatePickerMode.day, firstDate: DateTime(2015), lastDate: DateTime(2101));
+        context: context,
+        initialDate: _selectedDate,
+        initialDatePickerMode: DatePickerMode.day,
+        firstDate: DateTime(2015),
+        lastDate: DateTime(2101));
     if (_pickedDate != null) {
       setState(() {
         _selectedDate = _pickedDate;

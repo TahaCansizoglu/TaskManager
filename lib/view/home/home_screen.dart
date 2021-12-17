@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:task_management/core/database/db.dart';
 import '../../core/components/task_card2.dart';
 import '../authentication/signin/signin.dart';
 
@@ -15,7 +19,7 @@ import '../addtask/addtask_screen.dart';
 class HomeScreen extends StatefulWidget {
   // ignore: prefer_const_constructors_in_immutables
   HomeScreen({Key? key}) : super(key: key);
-  List<Task> task = [];
+  List<Task> tasks = [];
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
@@ -44,7 +48,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   icon: const Icon(Icons.search),
                   onPressed: () {
                     showSearch(
-                        context: context, delegate: Search(tasks: widget.task));
+                        context: context,
+                        delegate: Search(tasks: widget.tasks));
                   },
                 ),
                 const SizedBox(
@@ -55,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     handleClick(value, context);
                   },
                   itemBuilder: (BuildContext context) {
-                    return {'Logout', 'Settings'}.map((String choice) {
+                    return {'Logout'}.map((String choice) {
                       return PopupMenuItem<String>(
                         value: choice,
                         child: Text(choice),
@@ -91,21 +96,23 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   _buildTasksList(String taskType) {
+    List<Task> dbTasks = [];
     return Consumer<TaskManager>(
       builder: (context, value, child) {
-        widget.task = value.tasks;
+        widget.tasks = value.tasks;
+        dbTasks = value.tasks;
         if (taskType != "All") {
-          widget.task = value.tasks
+          dbTasks = value.tasks
               .where((element) => element.taskType == taskType)
               .toList();
         }
-        if (widget.task.isNotEmpty) {
+        if (dbTasks.isNotEmpty) {
           return ListView.builder(
-            itemCount: widget.task.length,
+            itemCount: dbTasks.length,
             itemBuilder: (context, index) {
               return HomeTaskSummary(
                 size: ScreenSize.screenWidth,
-                task: widget.task[index],
+                task: dbTasks[index],
               );
             },
           );
@@ -120,6 +127,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> handleClick(String value, BuildContext context) async {
     switch (value) {
       case 'Logout':
+        DBHelper.deleteDb();
         await FirebaseAuth.instance
             .signOut()
             .whenComplete(() => Navigator.pushAndRemoveUntil(
@@ -137,6 +145,19 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<String> getName() async {
+    List<Task> firebaseTasks = [];
+    var querySnapshot = await firestore
+        .collection('Users')
+        .doc(user!.uid)
+        .collection('todo')
+        .get();
+    querySnapshot.docs
+        .forEach((e) => firebaseTasks.add(Task.fromJson(e.data())));
+    for (var i = 0; i < firebaseTasks.length; i++) {
+      if (widget.tasks.every((item) => item.id != firebaseTasks[i].id)) {
+        widget.tasks.add(firebaseTasks[i]);
+      }
+    }
     await firestore
         .collection('Users')
         .doc(user!.uid)

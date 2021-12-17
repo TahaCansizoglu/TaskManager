@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:task_management/core/constants/utils.dart';
 
 import '../database/db.dart';
 import '../models/taskmodel.dart';
@@ -14,8 +15,15 @@ class TaskManager extends ChangeNotifier {
     notifyListeners();
   }
 
-  void addTask(Task task) {
-    DBHelper.insert(task);
+  Future<void> addTask(Task task) async {
+    final id = await DBHelper.insert(task);
+    task.id = int.parse(id.toString());
+    firestore
+        .collection('Users')
+        .doc("${user!.uid}")
+        .collection('todo')
+        .doc()
+        .set(task.toJson());
     tasks.add(task);
     notifyListeners();
   }

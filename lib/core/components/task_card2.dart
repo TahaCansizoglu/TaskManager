@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:task_management/core/constants/utils.dart';
 import 'package:task_management/core/init/task_manager.dart';
 import '../constants/theme.dart';
 import '../init/screen_size.dart';
@@ -17,14 +19,14 @@ class HomeTaskSummary extends StatelessWidget {
     return GestureDetector(
       onTap: () => _showBottom(context, task),
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(16.0, 0, 16, 10),
+        padding: const EdgeInsets.fromLTRB(16.0, 10, 16, 0),
         child: Card(
-          elevation: 0,
-          color: _getcolor(task.backgroundColor.toString(), "24"),
+          elevation: 10,
+          color: Colors.white,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           child: Padding(
-            padding: const EdgeInsets.all(15.0),
+            padding: const EdgeInsets.all(14.0),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -144,7 +146,20 @@ class HomeTaskSummary extends StatelessWidget {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(40.0))),
                   child: const Text('Complate Task'),
-                  onPressed: () {
+                  onPressed: () async {
+                    var snap = await firestore
+                        .collectionGroup('todo')
+                        .where('id', isEqualTo: value.id)
+                        .get();
+
+                    for (var element in snap.docs) {
+                      firestore
+                          .collection('Users')
+                          .doc(user!.uid)
+                          .collection('todo')
+                          .doc(element.id)
+                          .update({'isCompleted': 1});
+                    }
                     Provider.of<TaskManager>(context, listen: false)
                         .toggleTaskDone(value.id);
                     Navigator.pop(context);
@@ -156,7 +171,21 @@ class HomeTaskSummary extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(40.0))),
                 child: const Text('Delete Task'),
-                onPressed: () {
+                onPressed: () async {
+                  var snap = await firestore
+                      .collectionGroup('todo')
+                      .where('id', isEqualTo: value.id)
+                      .get();
+
+                  for (var element in snap.docs) {
+                    firestore
+                        .collection('Users')
+                        .doc(user!.uid)
+                        .collection('todo')
+                        .doc(element.id)
+                        .delete();
+                  }
+
                   Provider.of<TaskManager>(context, listen: false)
                       .deleteTask(value);
                   Navigator.pop(context);
