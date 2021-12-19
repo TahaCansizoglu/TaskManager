@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'core/constants/utils.dart';
 import 'core/database/db.dart';
 import 'core/init/task_manager.dart';
+import 'core/service/firebase_service.dart';
 import 'view/authentication/signin/signin.dart';
 import 'view/home/home_screen.dart';
 
@@ -16,8 +17,7 @@ void main() async {
 
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
   await DBHelper.initDb();
-  runApp(ChangeNotifierProvider(
-      create: (context) => TaskManager(), child: MyApp()));
+  runApp(ChangeNotifierProvider(create: (context) => TaskManager(), child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -30,6 +30,6 @@ class MyApp extends StatelessWidget {
         title: 'Task Management',
         theme: myTheme,
         debugShowCheckedModeBanner: false,
-        home: user != null ? HomeScreen() : const SignInScreen());
+        home: FirebaseService.user != null ? HomeScreen() : const SignInScreen());
   }
 }

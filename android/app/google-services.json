@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "762929828657",
+    "firebase_url": "https://piton-task-manager-default-rtdb.firebaseio.com",
+    "project_id": "piton-task-manager",
+    "storage_bucket": "piton-task-manager.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:762929828657:android:24d196b0c97e4529e01610",
+        "android_client_info": {
+          "package_name": "com.example.task_management"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "762929828657-1qsgsp4hbiuie6bg211spgj3jg0on3f8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCBYl1HrrNj723Nt5ZiwB9TIZhD95dmLB8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "762929828657-1qsgsp4hbiuie6bg211spgj3jg0on3f8.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "762929828657-0gma4mu070ilo13381rfuqcg3k7v3pjq.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.taskmanagement"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

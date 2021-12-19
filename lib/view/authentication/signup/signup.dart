@@ -1,9 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../../../core/constants/utils.dart';
-import '../../home/home_screen.dart';
+
+import '../../../core/service/firebase_service.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -13,9 +12,9 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  TextEditingController namecontroller = TextEditingController();
-  TextEditingController email = TextEditingController();
-  TextEditingController password = TextEditingController();
+  TextEditingController nameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
   bool? isChecked = false;
   @override
   Widget build(BuildContext context) {
@@ -47,7 +46,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   const Text(
                     'Sing Up',
                     style: TextStyle(
-                      fontFamily: 'PT-Sans',
                       fontSize: 30,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
@@ -56,17 +54,33 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   const SizedBox(
                     height: 30,
                   ),
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    child: const Text(
+                      'Name',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
                   _buildTextField(
                       hintText: 'Enter your Name',
                       obscureText: false,
-                      prefixedIcon: const Icon(Icons.mail, color: Colors.white),
-                      cont: namecontroller),
+                      prefixedIcon: const Icon(Icons.account_circle, color: Color(0xFF366EE6)),
+                      cont: nameController),
+                  const SizedBox(
+                    height: 16,
+                  ),
                   Container(
                     alignment: Alignment.centerLeft,
                     child: const Text(
                       'Email',
                       style: TextStyle(
-                        fontFamily: 'PT-Sans',
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
@@ -79,8 +93,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   _buildTextField(
                       hintText: 'Enter your email',
                       obscureText: false,
-                      prefixedIcon: const Icon(Icons.mail, color: Colors.white),
-                      cont: email),
+                      prefixedIcon: const Icon(Icons.mail, color: Color(0xFF366EE6)),
+                      cont: emailController),
                   const SizedBox(
                     height: 30,
                   ),
@@ -89,7 +103,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     child: const Text(
                       'Password',
                       style: TextStyle(
-                        fontFamily: 'PT-Sans',
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
@@ -102,8 +115,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   _buildTextField(
                       hintText: 'Enter your password',
                       obscureText: true,
-                      prefixedIcon: const Icon(Icons.lock, color: Colors.white),
-                      cont: password),
+                      prefixedIcon: const Icon(Icons.lock, color: Color(0xFF366EE6)),
+                      cont: passwordController),
                   const SizedBox(
                     height: 15,
                   ),
@@ -120,11 +133,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  Widget _buildTextField(
-      {required bool obscureText,
-      Widget? prefixedIcon,
-      String? hintText,
-      required TextEditingController cont}) {
+  Widget _buildTextField({required bool obscureText, Widget? prefixedIcon, String? hintText, required TextEditingController cont}) {
     return Material(
       color: Colors.transparent,
       elevation: 2,
@@ -143,13 +152,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
             ),
           ),
           filled: true,
-          fillColor: const Color(0xFF5180ff),
+          fillColor: const Color(0xFFFFFFFF),
           prefixIcon: prefixedIcon,
           hintText: hintText,
           hintStyle: const TextStyle(
-            color: Colors.white54,
+            color: Color(0xFF366EE6),
             fontWeight: FontWeight.bold,
-            fontFamily: 'PTSans',
           ),
         ),
       ),
@@ -177,29 +185,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
         child: const Text(
           'Sign Up',
           style: TextStyle(
-            fontFamily: 'PT-Sans',
             fontSize: 16,
             fontWeight: FontWeight.bold,
-            color: Colors.black,
+            color: Color(0xFF366EE6),
           ),
         ),
         onPressed: () async {
           try {
-            await FirebaseAuth.instance
-                .createUserWithEmailAndPassword(
-                    email: email.text, password: password.text)
-                .whenComplete(() {
-              user = FirebaseAuth.instance.currentUser;
-              firestore.collection("Users").doc(user!.uid).set({
-                "name": namecontroller.text,
-              });
-              name = namecontroller.text;
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => HomeScreen(),
-                  ));
-            });
+            FirebaseService.signUp(emailController.text, passwordController.text, nameController.text, context);
           } on FirebaseAuthException catch (e) {
             if (e.code == 'weak-password') {
               print('The password provided is too weak.');

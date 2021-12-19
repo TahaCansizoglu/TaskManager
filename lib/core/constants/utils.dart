@@ -1,14 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorful_tab/flutter_colorful_tab.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'theme.dart';
 
-User? user = FirebaseAuth.instance.currentUser;
-FirebaseFirestore firestore = FirebaseFirestore.instance;
-String name = "";
 final tab = ColorfulTabBar(
   tabs: [
     TabItem(

@@ -1,10 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+import '../../../core/database/db.dart';
+import '../../../core/service/firebase_service.dart';
 import '../resetpassword/reset_password.dart';
 import '../signup/signup.dart';
-import '../../home/home_screen.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({Key? key}) : super(key: key);
@@ -47,7 +47,6 @@ class _SignInScreenState extends State<SignInScreen> {
                   const Text(
                     'Sing in',
                     style: TextStyle(
-                      fontFamily: 'PT-Sans',
                       fontSize: 30,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
@@ -61,7 +60,6 @@ class _SignInScreenState extends State<SignInScreen> {
                     child: const Text(
                       'Email',
                       style: TextStyle(
-                        fontFamily: 'PT-Sans',
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
@@ -74,8 +72,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   _buildTextField(
                       hintText: 'Enter your email',
                       obscureText: false,
-                      prefixedIcon:
-                          const Icon(Icons.mail, color: Color(0xFF366EE6)),
+                      prefixedIcon: const Icon(Icons.mail, color: Color(0xFF366EE6)),
                       cont: emailController),
                   const SizedBox(
                     height: 30,
@@ -85,7 +82,6 @@ class _SignInScreenState extends State<SignInScreen> {
                     child: const Text(
                       'Password',
                       style: TextStyle(
-                        fontFamily: 'PT-Sans',
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
@@ -98,8 +94,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   _buildTextField(
                       hintText: 'Enter your password',
                       obscureText: true,
-                      prefixedIcon:
-                          const Icon(Icons.lock, color: Color(0xFF366EE6)),
+                      prefixedIcon: const Icon(Icons.lock, color: Color(0xFF366EE6)),
                       cont: passwordController),
                   const SizedBox(
                     height: 7,
@@ -126,7 +121,6 @@ class _SignInScreenState extends State<SignInScreen> {
                   const Text(
                     '- OR -',
                     style: TextStyle(
-                      fontFamily: 'PT-Sans',
                       fontSize: 16,
                       color: Colors.white,
                     ),
@@ -144,11 +138,7 @@ class _SignInScreenState extends State<SignInScreen> {
     );
   }
 
-  Widget _buildTextField(
-      {required bool obscureText,
-      Widget? prefixedIcon,
-      String? hintText,
-      required TextEditingController cont}) {
+  Widget _buildTextField({required bool obscureText, Widget? prefixedIcon, String? hintText, required TextEditingController cont}) {
     return Material(
       color: Colors.transparent,
       elevation: 2,
@@ -201,23 +191,15 @@ class _SignInScreenState extends State<SignInScreen> {
         child: const Text(
           'Login',
           style: TextStyle(
-            fontFamily: 'PT-Sans',
             fontSize: 16,
             fontWeight: FontWeight.bold,
             color: Color(0xFF366EE6),
           ),
         ),
         onPressed: () async {
-          await FirebaseAuth.instance
-              .signInWithEmailAndPassword(
-                  email: emailController.text,
-                  password: passwordController.text)
-              .whenComplete(() => Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => HomeScreen(),
-                  ),
-                  (Route<dynamic> route) => false));
+          await DBHelper.initDb();
+
+          FirebaseService.signIn(emailController.text, passwordController.text, context);
         },
       ),
     );
@@ -230,7 +212,6 @@ class _SignInScreenState extends State<SignInScreen> {
         const Text(
           'Dont have an Account? ',
           style: TextStyle(
-            fontFamily: 'PT-Sans',
             fontSize: 16,
             color: Colors.white,
           ),
@@ -239,7 +220,6 @@ class _SignInScreenState extends State<SignInScreen> {
           child: const Text(
             'Sing Up',
             style: TextStyle(
-              fontFamily: 'PT-Sans',
               fontSize: 16,
               fontWeight: FontWeight.bold,
               color: Colors.white,

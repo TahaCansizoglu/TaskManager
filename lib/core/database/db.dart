@@ -38,18 +38,20 @@ class DBHelper {
   }
 
   static Future<void> deleteDb() async {
-    await deleteDatabase(_path);
+    var databasesPath = await getDatabasesPath();
+    String path = databasesPath + 'demo.db';
+
+// Delete the database
+    await deleteDatabase(path);
   }
 
-  static Future<int> delete(Task task) async =>
-      await _db!.delete(_tableName, where: 'id = ?', whereArgs: [task.id]);
+  static Future<int> delete(Task task) async => await _db!.delete(_tableName, where: 'id = ?', whereArgs: [task.id]);
 
   static Future<List<Map<String, dynamic>>> query() async {
     return await _db!.query(_tableName);
   }
 
   static Future<int> update(int id) async {
-    return await _db!.rawUpdate(
-        ''' UPDATE tasks SET isCompleted = ? WHERE id = ? ''', [1, id]);
+    return await _db!.rawUpdate(''' UPDATE tasks SET isCompleted = ? WHERE id = ? ''', [1, id]);
   }
 }
