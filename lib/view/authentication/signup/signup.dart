@@ -71,7 +71,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   _buildTextField(
                       hintText: 'Enter your Name',
                       obscureText: false,
-                      prefixedIcon: const Icon(Icons.account_circle, color: Color(0xFF366EE6)),
+                      prefixedIcon: const Icon(Icons.account_circle,
+                          color: Color(0xFF366EE6)),
                       cont: nameController),
                   const SizedBox(
                     height: 16,
@@ -93,7 +94,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   _buildTextField(
                       hintText: 'Enter your email',
                       obscureText: false,
-                      prefixedIcon: const Icon(Icons.mail, color: Color(0xFF366EE6)),
+                      prefixedIcon:
+                          const Icon(Icons.mail, color: Color(0xFF366EE6)),
                       cont: emailController),
                   const SizedBox(
                     height: 30,
@@ -115,7 +117,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   _buildTextField(
                       hintText: 'Enter your password',
                       obscureText: true,
-                      prefixedIcon: const Icon(Icons.lock, color: Color(0xFF366EE6)),
+                      prefixedIcon:
+                          const Icon(Icons.lock, color: Color(0xFF366EE6)),
                       cont: passwordController),
                   const SizedBox(
                     height: 15,
@@ -133,7 +136,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  Widget _buildTextField({required bool obscureText, Widget? prefixedIcon, String? hintText, required TextEditingController cont}) {
+  Widget _buildTextField(
+      {required bool obscureText,
+      Widget? prefixedIcon,
+      String? hintText,
+      required TextEditingController cont}) {
     return Material(
       color: Colors.transparent,
       elevation: 2,
@@ -142,7 +149,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         cursorColor: Colors.white,
         cursorWidth: 2,
         obscureText: obscureText,
-        style: const TextStyle(color: Colors.white),
+        style: const TextStyle(color: Color(0xFF366EE6)),
         decoration: InputDecoration(
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
@@ -192,7 +199,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
         ),
         onPressed: () async {
           try {
-            FirebaseService.signUp(emailController.text, passwordController.text, nameController.text, context);
+            FirebaseService.signUp(emailController.text,
+                passwordController.text, nameController.text, context);
           } on FirebaseAuthException catch (e) {
             if (e.code == 'weak-password') {
               print('The password provided is too weak.');

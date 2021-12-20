@@ -26,6 +26,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
 
   String _endTime = "9:30 AM";
   String _dropDownText = "Daily";
+  String _dropDownPriority = "Low";
   late int taskType;
   late Color randomColor;
   @override
@@ -36,6 +37,13 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
         child: AppBar(
           centerTitle: true,
           title: Text("Add Task"),
+          actions: [
+            IconButton(
+                onPressed: () {
+                  _validateInputs();
+                },
+                icon: Icon(Icons.done))
+          ],
         ),
       ),
       body: Container(
@@ -45,7 +53,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(
-                height: 8,
+                height: 4,
               ),
               InputField(
                 title: "Title",
@@ -126,18 +134,20 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
               const SizedBox(
                 height: 18.0,
               ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  MyButton(
-                    label: "Create Task",
-                    onTap: () {
-                      _validateInputs();
-                    },
-                  ),
-                ],
-              ),
+              DropdownButtonFormField(
+                  value: _dropDownPriority,
+                  items: <String>['High', 'Low']
+                      .map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      _dropDownPriority = value.toString();
+                    });
+                  }),
             ],
           ),
         ),
@@ -178,8 +188,9 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
         startTime: _startTime,
         endTime: _endTime,
         isCompleted: 0,
-        backgroundColor: _randomColor(),
-        taskType: _dropDownText);
+        backgroundColor: _randomColor(_dropDownPriority),
+        taskType: _dropDownText,
+        taskPriority: _dropDownPriority);
 
     Provider.of<TaskManager>(context, listen: false).addTask(data);
   }
@@ -201,14 +212,15 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     }
   }
 
-  _randomColor() {
-    int length = 6;
-    String chars = '0123456789ABCDEF';
-    String hex = "";
-    while (length-- > 0) {
-      hex += chars[(Random().nextInt(16)) | 0];
+  _randomColor(String priority) {
+    switch (priority) {
+      case "High":
+        return "F44336";
+      case "Low":
+        return "FFEB3B";
+
+      default:
     }
-    return hex;
   }
 
   _showTimePicker() async {

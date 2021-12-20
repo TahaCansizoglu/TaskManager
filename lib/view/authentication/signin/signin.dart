@@ -1,5 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:task_management/core/init/task_manager.dart';
+import 'package:task_management/view/home/home_screen.dart';
 
 import '../../../core/database/db.dart';
 import '../../../core/service/firebase_service.dart';
@@ -72,7 +75,8 @@ class _SignInScreenState extends State<SignInScreen> {
                   _buildTextField(
                       hintText: 'Enter your email',
                       obscureText: false,
-                      prefixedIcon: const Icon(Icons.mail, color: Color(0xFF366EE6)),
+                      prefixedIcon:
+                          const Icon(Icons.mail, color: Color(0xFF366EE6)),
                       cont: emailController),
                   const SizedBox(
                     height: 30,
@@ -94,7 +98,8 @@ class _SignInScreenState extends State<SignInScreen> {
                   _buildTextField(
                       hintText: 'Enter your password',
                       obscureText: true,
-                      prefixedIcon: const Icon(Icons.lock, color: Color(0xFF366EE6)),
+                      prefixedIcon:
+                          const Icon(Icons.lock, color: Color(0xFF366EE6)),
                       cont: passwordController),
                   const SizedBox(
                     height: 7,
@@ -138,7 +143,11 @@ class _SignInScreenState extends State<SignInScreen> {
     );
   }
 
-  Widget _buildTextField({required bool obscureText, Widget? prefixedIcon, String? hintText, required TextEditingController cont}) {
+  Widget _buildTextField(
+      {required bool obscureText,
+      Widget? prefixedIcon,
+      String? hintText,
+      required TextEditingController cont}) {
     return Material(
       color: Colors.transparent,
       elevation: 2,
@@ -198,8 +207,17 @@ class _SignInScreenState extends State<SignInScreen> {
         ),
         onPressed: () async {
           await DBHelper.initDb();
-
-          FirebaseService.signIn(emailController.text, passwordController.text, context);
+          FirebaseService.signIn(
+                  emailController.text, passwordController.text, context)
+              .whenComplete(() => {
+                    Provider.of<TaskManager>(context, listen: false).getTasks(),
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => HomeScreen(),
+                        ),
+                        (Route<dynamic> route) => false)
+                  });
         },
       ),
     );

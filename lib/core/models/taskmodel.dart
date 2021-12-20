@@ -8,6 +8,7 @@ class Task {
   String endTime;
   String? backgroundColor;
   String? taskType;
+  String? taskPriority;
   Task(
       {this.id,
       required this.title,
@@ -17,7 +18,8 @@ class Task {
       required this.startTime,
       required this.endTime,
       this.backgroundColor,
-      this.taskType});
+      this.taskType,
+      this.taskPriority});
 
   Map<String, dynamic> toMap() {
     return {
@@ -29,7 +31,8 @@ class Task {
       'startTime': startTime,
       'endTime': endTime,
       'backgroundColor': backgroundColor,
-      'taskType': taskType
+      'taskType': taskType,
+      'taskPriority': taskPriority,
     };
   }
 
@@ -43,6 +46,7 @@ class Task {
     endTime = json['endTime'];
     backgroundColor = json['backgroundColor'];
     taskType = json['taskType'];
+    taskPriority = json['taskPriority'];
     return json['return'];
   }
 
@@ -57,6 +61,7 @@ class Task {
       isCompleted: json['isCompleted'] as int,
       backgroundColor: json['backgroundColor'].toString(),
       taskType: json['taskType'].toString(),
+      taskPriority: json['taskPriority'].toString(),
     );
   }
   Map<String, dynamic> toJson() {
@@ -70,6 +75,7 @@ class Task {
     data['endTime'] = endTime;
     data['backgroundColor'] = backgroundColor;
     data['taskType'] = taskType;
+    data['taskPriority'] = taskPriority;
     return data;
   }
 }

@@ -7,6 +7,13 @@ import 'theme.dart';
 final tab = ColorfulTabBar(
   tabs: [
     TabItem(
+      unselectedColor: Colors.blue[50],
+      color: lightblue,
+      title: const Text(
+        "All",
+      ),
+    ),
+    TabItem(
       color: Colors.lightBlue,
       unselectedColor: Colors.blue[50],
       title: const Text(
@@ -25,13 +32,6 @@ final tab = ColorfulTabBar(
       color: lightblue,
       title: const Text(
         "Monthly",
-      ),
-    ),
-    TabItem(
-      unselectedColor: Colors.blue[50],
-      color: lightblue,
-      title: const Text(
-        "All",
       ),
     ),
   ],
