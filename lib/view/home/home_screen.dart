@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 import 'package:task_management/core/constants/theme.dart';
 
@@ -80,6 +81,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ]),
             floatingActionButton: FloatingActionButton.extended(
               onPressed: () async {
+                // DBHelper.deleteDb();
                 Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -95,90 +97,112 @@ class _HomeScreenState extends State<HomeScreen> {
       builder: (context, value, child) {
         widget.tasks = [...value.tasks];
         var dbTasks = [...value.tasksType];
+        var counterList = [...value.tasks];
         if (taskType != "All") {
-          dbTasks = value.tasks
+          dbTasks = value.tasksType
               .where((element) => element.taskType == taskType)
               .toList();
         }
-        if (dbTasks.isNotEmpty) {
-          return Column(
-            children: [
-              Expanded(
-                  flex: 1,
-                  child: ListView(
-                    scrollDirection: Axis.horizontal,
-                    children: [
-                      GestureDetector(
-                        onTap: () =>
-                            Provider.of<TaskManager>(context, listen: false)
-                                .changeTaskType("High", dbTasks),
-                        child: HomeTaskCountCard(
-                            size: Size(
-                                ScreenSize.screenWidth, ScreenSize.screenWidth),
-                            desc: "High Priority",
-                            count: priorityLenght(widget.tasks, "High"),
-                            color: Colors.red),
-                      ),
-                      HomeTaskCountCard(
-                          size: Size(
-                              ScreenSize.screenWidth, ScreenSize.screenWidth),
-                          desc: "Low Priority",
-                          count: priorityLenght(widget.tasks, "Low"),
-                          color: Colors.yellow),
-                      HomeTaskCountCard(
-                          size: Size(
-                              ScreenSize.screenWidth, ScreenSize.screenWidth),
-                          desc: "Not Completed",
-                          count: completedLenght(widget.tasks, 0),
-                          color: Colors.blue),
-                      HomeTaskCountCard(
-                          size: Size(
-                              ScreenSize.screenWidth, ScreenSize.screenWidth),
-                          desc: "Complated",
-                          count: completedLenght(widget.tasks, 1),
-                          color: Colors.green),
-                      HomeTaskCountCard(
-                          size: Size(
-                              ScreenSize.screenWidth, ScreenSize.screenWidth),
-                          desc: "All",
-                          count: widget.tasks.length,
-                          color: Colors.grey),
-                    ],
-                  )),
-              Expanded(
-                flex: 5,
-                child: ListView.builder(
-                  itemCount: dbTasks.length,
-                  itemBuilder: (context, index) {
-                    return GestureDetector(
-                      onTap: () => _showBottom(context, dbTasks[index]),
-                      child: HomeTaskSummary(
-                        size: ScreenSize.screenWidth,
-                        task: dbTasks[index],
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ],
-          );
+        if (taskType != "All") {
+          counterList = value.tasks
+              .where((element) => element.taskType == taskType)
+              .toList();
         }
-        return Center(
-          child: Text(" There are no $taskType tasks."),
+
+        SchedulerBinding.instance?.addPostFrameCallback((_) =>
+            Provider.of<TaskManager>(context, listen: false)
+                .getListLength(counterList));
+        return Column(
+          children: [
+            Expanded(
+                flex: 1,
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: [
+                    buildCountCard(context, counterList, "All", value),
+                    buildCountCard(context, counterList, "High", value),
+                    buildCountCard(context, counterList, "Low", value),
+                    buildCountCard(context, counterList, 0, value),
+                    buildCountCard(context, counterList, 1, value),
+                  ],
+                )),
+            dbTasks.isNotEmpty
+                ? Expanded(
+                    flex: 5,
+                    child: ListView.builder(
+                      itemCount: dbTasks.length,
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+                          onTap: () => _showBottom(context, dbTasks[index]),
+                          child: HomeTaskSummary(
+                            size: ScreenSize.screenWidth,
+                            task: dbTasks[index],
+                          ),
+                        );
+                      },
+                    ),
+                  )
+                : const Expanded(
+                    flex: 5,
+                    child: Center(
+                      child: Text(" There are no tasks."),
+                    ),
+                  )
+          ],
         );
       },
     );
   }
 
+  GestureDetector buildCountCard(
+      BuildContext context, List<Task> dbTasks, var type, TaskManager value) {
+    if (type == "High" || type == "Low") {
+      return GestureDetector(
+        onTap: () => Provider.of<TaskManager>(context, listen: false)
+            .changeTaskType(type, dbTasks),
+        child: HomeTaskCountCard(
+            size: Size(ScreenSize.screenWidth, ScreenSize.screenWidth),
+            desc: "$type Priority",
+            count: type == "High"
+                ? value.countList["High"]
+                : value.countList["Low"],
+            color: type == "High" ? Colors.red : Colors.yellow),
+      );
+    } else if (type == 0 || type == 1) {
+      return GestureDetector(
+        onTap: () => Provider.of<TaskManager>(context, listen: false)
+            .changeTaskType(type, dbTasks),
+        child: HomeTaskCountCard(
+            size: Size(ScreenSize.screenWidth, ScreenSize.screenWidth),
+            desc: type == 0 ? "Not Completed" : "Completed",
+            count: type == 0 ? value.countList["0"] : value.countList["1"],
+            color: type == 0 ? Colors.blue : Colors.green),
+      );
+    } else {
+      return GestureDetector(
+        onTap: () => Provider.of<TaskManager>(context, listen: false)
+            .changeTaskType(type, dbTasks),
+        child: HomeTaskCountCard(
+            size: Size(ScreenSize.screenWidth, ScreenSize.screenWidth),
+            desc: "All Task",
+            count: dbTasks.length,
+            color: Colors.grey),
+      );
+    }
+  }
+
   priorityLenght(List<Task> dbTasks, String type) =>
-      dbTasks.where((element) => element.taskPriority == type).toList().length;
+      Provider.of<TaskManager>(context, listen: false).getListLength(
+          dbTasks.where((element) => element.taskPriority == type).toList());
   completedLenght(List<Task> dbTasks, int type) =>
-      dbTasks.where((element) => element.isCompleted == type).toList().length;
+      Provider.of<TaskManager>(context, listen: false).getListLength(
+          dbTasks.where((element) => element.isCompleted == type).toList());
 
   Future<void> handleClick(String value, BuildContext context) async {
     switch (value) {
       case 'Logout':
         await DBHelper.deleteDb();
+        //Provider.of<TaskManager>(context, listen: false).deleteAllTask();
         await FirebaseService.logOut(context);
 
         break;
@@ -283,7 +307,7 @@ class HomeTaskCountCard extends StatelessWidget {
 
   final Size size;
   final String desc;
-  final int count;
+  final int? count;
   final Color color;
 
   @override
