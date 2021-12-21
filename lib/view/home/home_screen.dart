@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 import 'package:task_management/core/constants/theme.dart';
+import 'package:task_management/view/profile/profile_screen.dart';
 
 import '../../core/components/task_card.dart';
 import '../../core/constants/utils.dart';
@@ -34,12 +35,16 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Scaffold(
             backgroundColor: Theme.of(context).backgroundColor,
             appBar: AppBar(
+              elevation: 0,
               leading: const CircleAvatar(
                 backgroundColor: Colors.white,
-                child: FlutterLogo(),
+                child: CircleAvatar(
+                  backgroundImage:
+                      AssetImage('assets/images/taskmanagericon.png'),
+                ),
               ),
               title: Consumer<TaskManager>(builder: (context, value, child) {
-                return Text(value.name);
+                return Text("Task Manager");
               }),
               actions: [
                 IconButton(
@@ -58,7 +63,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     handleClick(value, context);
                   },
                   itemBuilder: (BuildContext context) {
-                    return {'Logout'}.map((String choice) {
+                    return {'Logout', 'Profile'}.map((String choice) {
                       return PopupMenuItem<String>(
                         value: choice,
                         child: Text(choice),
@@ -110,22 +115,29 @@ class _HomeScreenState extends State<HomeScreen> {
         }
 
         SchedulerBinding.instance?.addPostFrameCallback((_) =>
-        
             Provider.of<TaskManager>(context, listen: false)
                 .getListLength(counterList));
         return Column(
           children: [
             Expanded(
                 flex: 1,
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  children: [
-                    buildCountCard(context, counterList, "All", value),
-                    buildCountCard(context, counterList, "High", value),
-                    buildCountCard(context, counterList, "Low", value),
-                    buildCountCard(context, counterList, 0, value),
-                    buildCountCard(context, counterList, 1, value),
-                  ],
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: lightblue,
+                      borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(10),
+                          bottomRight: Radius.circular(10))),
+                  child: ListView(
+                    shrinkWrap: true,
+                    scrollDirection: Axis.horizontal,
+                    children: [
+                      buildCountCard(context, counterList, "All", value),
+                      buildCountCard(context, counterList, "High", value),
+                      buildCountCard(context, counterList, "Low", value),
+                      buildCountCard(context, counterList, 0, value),
+                      buildCountCard(context, counterList, 1, value),
+                    ],
+                  ),
                 )),
             dbTasks.isNotEmpty
                 ? Expanded(
@@ -187,7 +199,7 @@ class _HomeScreenState extends State<HomeScreen> {
             size: Size(ScreenSize.screenWidth, ScreenSize.screenWidth),
             desc: "All Task",
             count: dbTasks.length,
-            color: Colors.grey),
+            color: Colors.cyan),
       );
     }
   }
@@ -207,8 +219,12 @@ class _HomeScreenState extends State<HomeScreen> {
         await FirebaseService.logOut(context);
 
         break;
-      case 'Settings':
-        break;
+      case 'Profile':
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ProfileScreen(title: "title"),
+            ));
     }
   }
 
@@ -314,6 +330,7 @@ class HomeTaskCountCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      margin: EdgeInsets.all(5),
       color: color.withOpacity(.4),
       elevation: 0.5,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),

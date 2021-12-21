@@ -32,7 +32,6 @@ class TaskManager extends ChangeNotifier {
       }
       for (var i = 0; i < firebaseTasks.length; i++) {
         if (tasks.every((item) => item.title != firebaseTasks[i].title)) {
-          tasks.add(firebaseTasks[i]);
           firebaseTasks[i].id = null;
           addTask(firebaseTasks[i]);
         }
