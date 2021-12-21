@@ -110,6 +110,7 @@ class _HomeScreenState extends State<HomeScreen> {
         }
 
         SchedulerBinding.instance?.addPostFrameCallback((_) =>
+        
             Provider.of<TaskManager>(context, listen: false)
                 .getListLength(counterList));
         return Column(
