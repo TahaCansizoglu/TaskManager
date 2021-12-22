@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
-import 'package:task_management/core/constants/theme.dart';
-import 'package:task_management/view/profile/profile_screen.dart';
-
-import '../../core/components/task_card.dart';
+import '../../core/components/widget/task_card.dart';
+import '../../core/components/widget/taskcount_card.dart';
+import '../../core/constants/theme.dart';
+import '../profile/profile_screen.dart';
 import '../../core/constants/utils.dart';
 import '../../core/database/db.dart';
 import '../../core/init/screen_size.dart';
@@ -35,16 +35,17 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Scaffold(
             backgroundColor: Theme.of(context).backgroundColor,
             appBar: AppBar(
+              centerTitle: true,
               elevation: 0,
-              leading: const CircleAvatar(
-                backgroundColor: Colors.white,
-                child: CircleAvatar(
-                  backgroundImage:
-                      AssetImage('assets/images/taskmanagericon.png'),
-                ),
-              ),
+              // leading: const CircleAvatar(
+              //   backgroundColor: Colors.white,
+              //   child: CircleAvatar(
+              //     backgroundImage:
+              //         AssetImage('assets/images/taskmanagericon.png'),
+              //   ),
+              // ),
               title: Consumer<TaskManager>(builder: (context, value, child) {
-                return Text("Task Manager");
+                return const Text("Task Manager");
               }),
               actions: [
                 IconButton(
@@ -58,18 +59,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(
                   width: 10,
                 ),
-                PopupMenuButton<String>(
-                  onSelected: (value) {
-                    handleClick(value, context);
-                  },
-                  itemBuilder: (BuildContext context) {
-                    return {'Logout', 'Profile'}.map((String choice) {
-                      return PopupMenuItem<String>(
-                        value: choice,
-                        child: Text(choice),
-                      );
-                    }).toList();
-                  },
+                IconButton(
+                  icon: Icon(Icons.person),
+                  onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ProfileScreen(title: "title"),
+                      )),
                 ),
               ],
               bottom: PreferredSize(
@@ -122,7 +118,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Expanded(
                 flex: 1,
                 child: Container(
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                       color: lightblue,
                       borderRadius: BorderRadius.only(
                           bottomLeft: Radius.circular(10),
@@ -179,7 +175,7 @@ class _HomeScreenState extends State<HomeScreen> {
             count: type == "High"
                 ? value.countList["High"]
                 : value.countList["Low"],
-            color: type == "High" ? Colors.red : Colors.yellow),
+            color: type == "High" ? Colors.red : Colors.yellow.shade600),
       );
     } else if (type == 0 || type == 1) {
       return GestureDetector(
@@ -201,30 +197,6 @@ class _HomeScreenState extends State<HomeScreen> {
             count: dbTasks.length,
             color: Colors.cyan),
       );
-    }
-  }
-
-  priorityLenght(List<Task> dbTasks, String type) =>
-      Provider.of<TaskManager>(context, listen: false).getListLength(
-          dbTasks.where((element) => element.taskPriority == type).toList());
-  completedLenght(List<Task> dbTasks, int type) =>
-      Provider.of<TaskManager>(context, listen: false).getListLength(
-          dbTasks.where((element) => element.isCompleted == type).toList());
-
-  Future<void> handleClick(String value, BuildContext context) async {
-    switch (value) {
-      case 'Logout':
-        await DBHelper.deleteDb();
-        //Provider.of<TaskManager>(context, listen: false).deleteAllTask();
-        await FirebaseService.logOut(context);
-
-        break;
-      case 'Profile':
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ProfileScreen(title: "title"),
-            ));
     }
   }
 
@@ -252,21 +224,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           borderRadius: BorderRadius.circular(40.0))),
                   child: const Text('Complate Task'),
                   onPressed: () async {
-                    var snap = await FirebaseService.firestore
-                        .collection('Users')
-                        .doc(FirebaseService.user!.uid)
-                        .collection('todo')
-                        .where('id', isEqualTo: value.id)
-                        .get();
-
-                    for (var element in snap.docs) {
-                      FirebaseService.firestore
-                          .collection('Users')
-                          .doc(FirebaseService.user!.uid)
-                          .collection('todo')
-                          .doc(element.id)
-                          .update({'isCompleted': 1});
-                    }
+                    await FirebaseService.updateField(value, 'isCompleted', 1);
                     Provider.of<TaskManager>(context, listen: false)
                         .toggleTaskDone(value.id);
                     Navigator.pop(context);
@@ -311,58 +269,4 @@ class _HomeScreenState extends State<HomeScreen> {
           );
         },
       );
-}
-
-class HomeTaskCountCard extends StatelessWidget {
-  const HomeTaskCountCard({
-    Key? key,
-    required this.size,
-    required this.desc,
-    required this.count,
-    required this.color,
-  }) : super(key: key);
-
-  final Size size;
-  final String desc;
-  final int? count;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.all(5),
-      color: color.withOpacity(.4),
-      elevation: 0.5,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      child: SizedBox(
-        height: size.height / 4 - 32,
-        width: size.width / 3 - 22,
-        child: Stack(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Text(
-                    desc,
-                    style: Theme.of(context).textTheme.bodyText1?.copyWith(
-                        fontWeight: FontWeight.normal, color: Colors.white),
-                  ),
-                  Text(
-                    '$count',
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline4
-                        ?.copyWith(fontWeight: FontWeight.bold, color: color),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }

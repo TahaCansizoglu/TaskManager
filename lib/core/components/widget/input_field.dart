@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../constants/theme.dart';
-import '../init/screen_size.dart';
+import '../../constants/theme.dart';
+import '../../init/screen_size.dart';
 
 class InputField extends StatelessWidget {
   final String title;

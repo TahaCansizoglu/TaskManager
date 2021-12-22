@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../constants/theme.dart';
-
 class MyButton extends StatelessWidget {
   final VoidCallback onTap;
   final String label;

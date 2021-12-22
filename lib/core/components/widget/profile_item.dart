@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:task_management/core/constants/theme.dart';
+import '../../constants/theme.dart';
 
 class ProfileListItem extends StatelessWidget {
   final IconData icon;

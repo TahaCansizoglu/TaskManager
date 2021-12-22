@@ -1,8 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:task_management/core/init/task_manager.dart';
-import 'package:task_management/view/home/home_screen.dart';
+import '../../../core/init/task_manager.dart';
+import '../../home/home_screen.dart';
 
 import '../../../core/database/db.dart';
 import '../../../core/service/firebase_service.dart';
@@ -47,8 +48,13 @@ class _SignInScreenState extends State<SignInScreen> {
               ).copyWith(top: 60),
               child: Column(
                 children: [
+                  Image.asset('assets/images/taskmanagericon.png',
+                      width: 150, height: 150),
+                  SizedBox(
+                    height: 30,
+                  ),
                   const Text(
-                    'Sing in',
+                    'Task Manager',
                     style: TextStyle(
                       fontSize: 30,
                       fontWeight: FontWeight.bold,
@@ -209,15 +215,24 @@ class _SignInScreenState extends State<SignInScreen> {
           await DBHelper.initDb();
           FirebaseService.signIn(
                   emailController.text, passwordController.text, context)
-              .whenComplete(() => {
-                    Provider.of<TaskManager>(context, listen: false).getTasks(),
-                    Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => HomeScreen(),
-                        ),
-                        (Route<dynamic> route) => false)
-                  });
+              .whenComplete(() {
+            try {
+              if (FirebaseService.user != null) {
+                Provider.of<TaskManager>(context, listen: false).getTasks();
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => HomeScreen(),
+                    ),
+                    (Route<dynamic> route) => false);
+              }
+            } on FirebaseAuthException catch (e) {
+              final snackBar = SnackBar(content: Text(e.message.toString()));
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+              print(e.code);
+              print(e.message);
+            }
+          });
         },
       ),
     );

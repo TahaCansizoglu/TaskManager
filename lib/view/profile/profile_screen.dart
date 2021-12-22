@@ -1,8 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:task_management/core/components/profile_item.dart';
-import 'package:task_management/core/constants/theme.dart';
+import 'package:provider/provider.dart';
+import 'package:task_management/core/database/db.dart';
+import 'package:task_management/core/init/task_manager.dart';
+import '../../core/components/widget/profile_item.dart';
+import '../../core/constants/theme.dart';
+import '../../core/service/firebase_service.dart';
+import '../authentication/resetpassword/reset_password.dart';
 
 class ProfileScreen extends StatefulWidget {
   ProfileScreen({required this.title});
@@ -13,6 +18,23 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  bool _isEditingText = false;
+  late TextEditingController _editingController;
+  String initialText = FirebaseService.name;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _editingController = TextEditingController(text: initialText);
+  }
+
+  @override
+  void dispose() {
+    _editingController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,18 +61,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   height: 30,
                 ),
                 const SizedBox(height: 30),
-                const Text(
-                  'Taha Furkan',
-                  style: TextStyle(
-                    fontSize: 30,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
+                _editTitleTextField(),
                 const SizedBox(height: 20),
                 const Text(
                   'Mobile App Developer',
                   textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 20, fontFamily: "Poppins"),
+                  style: TextStyle(fontSize: 20, fontFamily: "Poppins"),
                 ),
                 ProfileListItems(),
               ],
@@ -59,6 +75,42 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ],
       ),
     );
+  }
+
+  Widget _editTitleTextField() {
+    if (_isEditingText) {
+      return Center(
+        child: TextField(
+          onSubmitted: (newValue) {
+            setState(() {
+              initialText = newValue;
+              _isEditingText = false;
+              FirebaseService.firestore
+                  .collection("Users")
+                  .doc(FirebaseService.user!.uid)
+                  .set({
+                "name": newValue,
+              });
+            });
+          },
+          autofocus: true,
+          controller: _editingController,
+        ),
+      );
+    }
+    return InkWell(
+        onTap: () {
+          setState(() {
+            _isEditingText = true;
+          });
+        },
+        child: Text(
+          initialText,
+          style: const TextStyle(
+            color: lightblue,
+            fontSize: 30.0,
+          ),
+        ));
   }
 }
 
@@ -120,77 +172,36 @@ class AvatarImage extends StatelessWidget {
   }
 }
 
-class SocialIcons extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        SocialIcon(
-          color: const Color(0xFF102397),
-          iconData: facebook,
-          onPressed: () {},
-        ),
-        SocialIcon(
-          color: const Color(0xFFff4f38),
-          iconData: googlePlus,
-          onPressed: () {},
-        ),
-        SocialIcon(
-          color: const Color(0xFF38A1F3),
-          iconData: twitter,
-          onPressed: () {},
-        ),
-        SocialIcon(
-          color: const Color(0xFF2867B2),
-          iconData: linkedin,
-          onPressed: () {},
-        )
-      ],
-    );
-  }
-}
-
-class SocialIcon extends StatelessWidget {
-  final Color color;
-  final IconData iconData;
-  final Function onPressed;
-
-  SocialIcon(
-      {required this.color, required this.iconData, required this.onPressed});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 20.0),
-      child: Container(
-        width: 45.0,
-        height: 45.0,
-        decoration: BoxDecoration(shape: BoxShape.circle, color: color),
-        child: RawMaterialButton(
-          shape: const CircleBorder(),
-          onPressed: () => onPressed,
-          child: Icon(iconData, color: Colors.white),
-        ),
-      ),
-    );
-  }
-}
-
 class ProfileListItems extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
       child: ListView(
-        children: const <Widget>[
-          ProfileListItem(
-            icon: Icons.settings,
-            text: 'Settings',
+        children: <Widget>[
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ResetPasswordScreen(),
+                  ));
+            },
+            child: const ProfileListItem(
+              icon: Icons.password,
+              text: 'Reset Password',
+            ),
           ),
-          ProfileListItem(
-            icon: Icons.hail_outlined,
-            text: 'Logout',
-            hasNavigation: false,
+          GestureDetector(
+            onTap: () async {
+              await DBHelper.deleteDb();
+              Provider.of<TaskManager>(context, listen: false).deleteAllTask();
+              await FirebaseService.logOut(context);
+            },
+            child: const ProfileListItem(
+              icon: Icons.hail_outlined,
+              text: 'Logout',
+              hasNavigation: false,
+            ),
           ),
         ],
       ),

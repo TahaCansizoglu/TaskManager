@@ -20,6 +20,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Color(0xFF5967ff),
+          elevation: 0,
+        ),
         body: Container(
           width: double.infinity,
           height: double.infinity,
@@ -198,18 +202,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
           ),
         ),
         onPressed: () async {
-          try {
-            FirebaseService.signUp(emailController.text,
-                passwordController.text, nameController.text, context);
-          } on FirebaseAuthException catch (e) {
-            if (e.code == 'weak-password') {
-              print('The password provided is too weak.');
-            } else if (e.code == 'email-already-in-use') {
-              print('The account already exists for that email.');
-            }
-          } catch (e) {
-            print(e);
-          }
+          FirebaseService.signUp(emailController.text, passwordController.text,
+              nameController.text, context);
         },
       ),
     );

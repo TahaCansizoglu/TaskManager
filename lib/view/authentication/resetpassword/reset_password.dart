@@ -18,6 +18,10 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Color(0xFF5967ff),
+          elevation: 0,
+        ),
         body: Container(
           width: double.infinity,
           height: double.infinity,
@@ -69,7 +73,8 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                   _buildTextField(
                       hintText: 'Enter your email',
                       obscureText: false,
-                      prefixedIcon: const Icon(Icons.mail, color: Color(0xFF366EE6)),
+                      prefixedIcon:
+                          const Icon(Icons.mail, color: Color(0xFF366EE6)),
                       cont: emailController),
                   const SizedBox(
                     height: 7,
@@ -84,7 +89,11 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     );
   }
 
-  Widget _buildTextField({required bool obscureText, Widget? prefixedIcon, String? hintText, required TextEditingController cont}) {
+  Widget _buildTextField(
+      {required bool obscureText,
+      Widget? prefixedIcon,
+      String? hintText,
+      required TextEditingController cont}) {
     return Material(
       color: Colors.transparent,
       elevation: 2,

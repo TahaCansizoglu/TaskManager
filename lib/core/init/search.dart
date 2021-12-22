@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../components/task_card.dart';
+import '../components/widget/task_card.dart';
 import 'screen_size.dart';
 import '../models/taskmodel.dart';
 
@@ -42,10 +42,14 @@ class Search extends SearchDelegate {
   @override
   Widget buildSuggestions(BuildContext context) {
     List<Task> suggestions = [];
-    query.isEmpty ? suggestions = tasks : suggestions.addAll(tasks.where((element) => element.title.contains(query)));
+    query.isEmpty
+        ? suggestions = tasks
+        : suggestions
+            .addAll(tasks.where((element) => element.title.contains(query)));
     return ListView.builder(
       itemCount: suggestions.length,
-      itemBuilder: (context, index) => HomeTaskSummary(task: suggestions[index], size: ScreenSize.screenWidth),
+      itemBuilder: (context, index) => HomeTaskSummary(
+          task: suggestions[index], size: ScreenSize.screenWidth),
     );
   }
 }
