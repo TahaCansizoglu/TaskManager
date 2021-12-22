@@ -1,6 +1,6 @@
 # task_management
 
-Provider ve SQLite ile geliştirilmiş bir Task Manager uygulamasıdır.
+Provider, SQLite, Firestore ve FireAuth ile geliştirilmiş bir Task Manager uygulamasıdır.
 
 ## Getting Started
 
