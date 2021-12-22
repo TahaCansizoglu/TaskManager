@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:task_management/core/service/firebase_service.dart';
+import '../service/firebase_service.dart';
 import '../constants/utils.dart';
 
 import '../database/db.dart';
@@ -10,30 +10,28 @@ class TaskManager extends ChangeNotifier {
   List<Task> tasksType = <Task>[];
   Map<String, int> countList = {};
   int listLength = 0;
-  String name = "";
+  bool isFill = true;
   TaskManager() {
     getTasks();
   }
   void getTasks() async {
     bool isFirebase = false;
-    tasks = await DBHelper.getTasks();
+    await FirebaseService.getName();
+    tasks = await DBHelper.getTasks()
+        .whenComplete(() => {tasks.isEmpty ? isFill = false : isFill = true});
+
     print(tasks.length);
     List<Task> firebaseTasks = [];
-    await FirebaseService.firestore
-        .collection('Users')
-        .doc(FirebaseService.user!.uid)
-        .get()
-        .then((value) => name = value['name']);
 
-    if (tasks.isEmpty) {
+    if (tasks.isEmpty && !isFill) {
       var querySnapshot = await FirebaseService.getFirebaseData();
       for (var e in querySnapshot.docs) {
         firebaseTasks.add(Task.fromJson(e.data()));
       }
       for (var i = 0; i < firebaseTasks.length; i++) {
-        if (tasks.every((item) => item.title != firebaseTasks[i].title)) {
+        if (tasks.every((item) => item.id != firebaseTasks[i].id)) {
           firebaseTasks[i].id = null;
-          addTask(firebaseTasks[i]);
+          addTask(firebaseTasks[i], "DB");
         }
       }
     }
@@ -42,15 +40,15 @@ class TaskManager extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> addTask(Task task) async {
+  Future<void> addTask(Task task, var type) async {
     final id = await DBHelper.insert(task);
     task.id = id;
-    FirebaseService.firestore
-        .collection('Users')
-        .doc(FirebaseService.user!.uid)
-        .collection('todo')
-        .doc()
-        .set(task.toJson());
+    if (type == "FB") {
+      FirebaseService.addTaskFirebase(task);
+    }
+    if (type == "DB") {
+      await FirebaseService.updateField(task, "id", task.id);
+    }
     tasks.add(task);
     tasksType = [...tasks];
     notifyListeners();
@@ -59,7 +57,6 @@ class TaskManager extends ChangeNotifier {
   void toggleTaskDone(int? id) {
     DBHelper.update(id!);
     getTasks();
-
     notifyListeners();
   }
 
@@ -110,7 +107,7 @@ class TaskManager extends ChangeNotifier {
   }
 
   void deleteAllTask() {
-    tasks.clear();
+    tasks = [];
     print(tasks);
     notifyListeners();
   }
